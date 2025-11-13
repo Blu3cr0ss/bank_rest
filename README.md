@@ -4,3 +4,5 @@
 `docker compose build && docker compose up`
 
 https://localhost:8080/swagger-ui/index.html
+
+Дефолтные credentials user: admin pass: admin
