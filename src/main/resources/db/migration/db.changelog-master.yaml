@@ -1,0 +1,154 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: bluecross
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+#                  defaultValueSequenceNext: users_seq
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: VARCHAR
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: VARCHAR
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 2
+      author: bluecross
+      changes:
+        - createTable:
+            tableName: cards
+            columns:
+              - column:
+                  name: number
+                  type: BIGINT
+#                  defaultValueSequenceNext: users_seq
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: owner_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expiration
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: true
+              - column:
+                  name: block_requested
+                  type: BOOLEAN
+              - column:
+                  name: status
+                  type: SMALLINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: balance
+                  type: INT
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 3
+      author: bluecross
+      changes:
+        - createSequence:
+            sequenceName: users_seq
+            startValue: 1
+            incrementBy: 1
+  - changeSet:
+      id: 4
+      author: bluecross
+      changes:
+        - createSequence:
+            sequenceName: cards_seq
+            startValue: 1
+            incrementBy: 1
+  - changeSet:
+      id: 5
+      author: bluecross
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                    name: id
+                    valueComputed: "nextval('users_seq')"
+              - column:
+                  name: username
+                  value: admin
+              - column:
+                  name: password
+                  value: "$2a$10$9ZkhCOvQ1sOA/YNELu0YP.a4Xb5zoavab.Fz0QW4gKt656Mvva60W"
+              - column:
+                  name: role
+                  valueNumeric: 1
+  - changeSet:
+      id: 6
+      author: bluecross
+      changes:
+        - insert:
+            tableName: cards
+            columns:
+              - column:
+                  name: number
+                  valueComputed: "nextval('cards_seq')"
+              - column:
+                  name: owner_id
+                  valueNumeric: 1
+              - column:
+                  name: expiration
+                  valueDate: "2026-11-12"
+              - column:
+                  name: block_requested
+                  valueBoolean: false
+              - column:
+                  name: status
+                  valueNumeric: 1
+              - column:
+                  name: balance
+                  valueNumeric: 999
+  - changeSet:
+      id: 7
+      author: bluecross
+      changes:
+        - insert:
+            tableName: cards
+            columns:
+              - column:
+                  name: number
+                  valueComputed: "nextval('cards_seq')"
+              - column:
+                  name: owner_id
+                  valueNumeric: 1
+              - column:
+                  name: expiration
+                  valueDate: "2027-11-12"
+              - column:
+                  name: block_requested
+                  valueBoolean: false
+              - column:
+                  name: status
+                  valueNumeric: 0
+              - column:
+                  name: balance
+                  valueNumeric: 123

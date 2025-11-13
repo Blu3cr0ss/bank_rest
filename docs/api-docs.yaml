@@ -1,0 +1,303 @@
+openapi: 3.1.0
+info:
+  title: bank_rest api
+servers:
+- url: https://localhost:8080
+  description: Generated server url
+security:
+- Bearer Authentication: []
+paths:
+  /api/admin/card/status:
+    put:
+      tags:
+      - admin-controller
+      operationId: setCardStatus
+      parameters:
+      - name: status
+        in: query
+        required: true
+        schema:
+          type: string
+          enum:
+          - ACTIVE
+          - BLOCKED
+          - EXPIRED
+      - name: card
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/user/transfer:
+    post:
+      tags:
+      - user-controller
+      operationId: transfer
+      parameters:
+      - name: from
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: to
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      - name: amount
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: OK
+  /api/user/requestBlock:
+    post:
+      tags:
+      - user-controller
+      operationId: requestBlock
+      parameters:
+      - name: card
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/auth/login:
+    post:
+      tags:
+      - auth-controller
+      operationId: login
+      parameters:
+      - name: username
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /api/admin/user:
+    post:
+      tags:
+      - admin-controller
+      operationId: createUser
+      parameters:
+      - name: user
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/CreateUserDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetUserDto"
+    delete:
+      tags:
+      - admin-controller
+      operationId: deleteUserById
+      parameters:
+      - name: id
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/admin/card:
+    post:
+      tags:
+      - admin-controller
+      operationId: createCard
+      parameters:
+      - name: card
+        in: query
+        required: true
+        schema:
+          $ref: "#/components/schemas/CreateCardDto"
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/GetCardAsAdminDto"
+    delete:
+      tags:
+      - admin-controller
+      operationId: deleteCard
+      parameters:
+      - name: card
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+  /api/user/cards:
+    get:
+      tags:
+      - user-controller
+      operationId: getCards
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GetCardDto"
+  /api/user/balance:
+    get:
+      tags:
+      - user-controller
+      operationId: getBalance
+      parameters:
+      - name: card
+        in: query
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: integer
+                format: int32
+  /api/admin/users:
+    get:
+      tags:
+      - admin-controller
+      operationId: getUsers
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GetUserDto"
+  /api/admin/cards:
+    get:
+      tags:
+      - admin-controller
+      operationId: getCards_1
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GetCardAsAdminDto"
+components:
+  schemas:
+    CreateUserDto:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum:
+          - USER
+          - ADMIN
+    GetUserDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        role:
+          type: string
+          enum:
+          - USER
+          - ADMIN
+        username:
+          type: string
+        cards:
+          type: array
+          items:
+            type: string
+    CreateCardDto:
+      type: object
+      properties:
+        ownerId:
+          type: integer
+          format: int64
+        balance:
+          type: integer
+          format: int32
+    GetCardAsAdminDto:
+      type: object
+      properties:
+        number:
+          type: string
+        status:
+          type: string
+          enum:
+          - ACTIVE
+          - BLOCKED
+          - EXPIRED
+        owner:
+          type: integer
+          format: int64
+        expiration:
+          type: string
+    GetCardDto:
+      type: object
+      properties:
+        number:
+          type: string
+        balance:
+          type: boolean
+        status:
+          type: string
+          enum:
+          - ACTIVE
+          - BLOCKED
+          - EXPIRED
+        owner:
+          type: integer
+          format: int64
+        expiration:
+          type: string
+  securitySchemes:
+    Bearer Authentication:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
